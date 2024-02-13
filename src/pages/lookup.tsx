@@ -5,16 +5,16 @@ import { recoverMessageAddress } from 'viem'
 
 export default function Lookup() {
 	const [lookupResponse, setLookupResponse] = useState<string>();
-  const nameInputRef = useRef(null);
-  const addressInputRef = useRef(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
   const [gateway, setGateway] = useState("https://rpc.walletconnect.com");
 
-  const handleGatewayChange = (event) => {
+  const HandleGatewayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGateway(event.target.value);
   };
 
-  const handleNameLookup = async () => {
-    const name = nameInputRef.current.value
+  const HandleNameLookup = async () => {
+    const name = nameInputRef.current?.value;
 
     try {
       const response = await fetch(`${gateway}/v1/profile/account/${name}`, {
@@ -43,8 +43,8 @@ export default function Lookup() {
   };
 
 
-  const handleAddressLookup = async () => {
-    const name = addressInputRef.current.value
+  const HandleAddressLookup = async () => {
+    const name = addressInputRef.current?.value;
 
     try {
       const response = await fetch(`${gateway}/v1/profile/reverse/${name}`, {
@@ -89,7 +89,7 @@ export default function Lookup() {
                 <li>
 									Click{" "}
 									<span
-										onClick={handleNameLookup}
+										onClick={HandleNameLookup}
 										className={styles.button}
 									>
 										to lookup by name
@@ -104,7 +104,7 @@ export default function Lookup() {
 								<li>
 									Click{" "}
 									<span
-										onClick={handleAddressLookup}
+										onClick={HandleAddressLookup}
 										className={styles.button}
 									>
 										to lookup by address
@@ -114,7 +114,7 @@ export default function Lookup() {
 									Gateway (optional)
 								</li>
 								<li>
-									<input type="text" id="gateway" name="gateway" value={ gateway } onChange={handleGatewayChange} />
+									<input type="text" id="gateway" name="gateway" value={ gateway } onChange={HandleGatewayChange} />
 								</li>
 							</ul>
 						</div>

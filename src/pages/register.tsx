@@ -8,22 +8,22 @@ export default function Register() {
 		useState(false);
 	const [isConnectHighlighted, setIsConnectHighlighted] = useState(false);
 	const [gateway, setGateway] = useState("https://rpc.walletconnect.com");
-	const [signature, setSignature] = useState();
-	const [payloadMessage, setPayloadMessage] = useState();
+	const [payloadMessage, setPayloadMessage] = useState<string | undefined>();
+	const [signature, setSignature] = useState<`0x${string}`>();
 
 	const { signMessage, data, error, isLoading } = useSignMessage({
-    message: 'Please sign this message to confirm your identity.',
-    onSuccess(data) {
-      console.log('Message signed:', data);
+		message: 'Please sign this message to confirm your identity.',
+		onSuccess(data) {
+			console.log('Message signed:', data);
 			setSignature(data);
-    },
-    onError(error) {
-      alert('Error signing message');
-    },
-  });
+		},
+		onError(error) {
+			alert('Error signing message');
+		},
+	});
 
-	const nameInputRef = useRef(null);
-	const bioInputRef = useRef(null);
+		const nameInputRef = useRef<HTMLInputElement>(null);
+		const bioInputRef = useRef<HTMLInputElement>(null);
 
 	const closeAll = () => {
 		setIsNetworkSwitchHighlighted(false);
@@ -31,8 +31,8 @@ export default function Register() {
 	};
 
 	const sign = () => {
-		const name = nameInputRef.current.value;
-		const bio = bioInputRef.current.value;
+		const name = nameInputRef.current?.value;
+		const bio = bioInputRef.current?.value;
 		const timestamp = Math.round(Date.now() / 1000)
 		const sign_message = {
 			name: name,
@@ -46,22 +46,22 @@ export default function Register() {
 		setPayloadMessage(json_to_sign);
 	}
 
-	const handleGatewayChange = (event) => {
-    setGateway(event.target.value);
-  };
+		const handleGatewayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+			setGateway(event.target.value);
+		};
 
 	const handleRegister = async () => {
 		const recoveredAddress = await recoverMessageAddress({
-			message: payloadMessage,
-			signature: signature,
+			message: payloadMessage ? payloadMessage : '',
+			signature: signature ? signature : Uint8Array.from([]),
 		})
-  
-    const data = {
-      message: payloadMessage,
-      signature: signature,
-      coin_type: 60,
-      address: recoveredAddress,
-    };
+
+		const data = {
+			message: payloadMessage ? payloadMessage : '',
+			signature: signature ? signature : '',
+			coin_type: 60,
+			address: recoveredAddress,
+		};
 
     try {
       const response = await fetch(`${gateway}/v1/profile/account`, {
